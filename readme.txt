@@ -6,7 +6,7 @@ Requires at least: 2.5
 Tested up to: 2.7.1
 Stable tag: 4.3
 
-Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You use it for recent posts and for pages and categories combined.
+Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts and for pages and categories combined.
 
 == Description ==
 
