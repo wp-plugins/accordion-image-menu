@@ -1,0 +1,51 @@
+=== Accordion Image Menu ===
+Contributors: Alaingg
+Donate link: http://web-argument.com/accordion-image-menu-plugin/
+Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects
+Requires at least: 2.5
+Tested up to: 2.7.1
+Stable tag: 4.3
+
+Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You use it for recent posts and for pages and categories combined.
+
+== Description ==
+
+This a different menu that use your post images as a background. You can insert the menu whereever you want: content, php files or widget if your theme allows it. Visit the [plugin page]:http://web-argument.com/accordion-image-menu-plugin/ for demo and details.
+
+Special Features:
+
+*   Allows to combine pages and categories and apply order to them
+*   The plugin use the medium size image generated
+*   You can use it to list recent posts
+*   Multiple transitions effects included (Elastic, Bounce, Sine, Pow, Quart, Back, etc)
+*   You can include or not “the title” of the target page 
+*   Compatible with: Firefox 2,3, IE 6, 7 Safari
+
+== Installation ==
+
+1. Upload “Accordion Image Menu” folder to the ‘/wp-content/plugins/’ directory.
+2. Activate the plugin through the ‘Plugins’ menu in WordPress.
+3. Customize the menu under Settings/Accordion Image Menu.
+
+== Frequently Asked Questions ==
+
+= It is compatible with jquery? =
+
+Yes, you can use lightbox, thickbox, etc.
+
+= The menu affect the SEO =
+
+No, all of your menu items are displayed using simple html tags.
+
+== Screenshots ==
+
+1. Pages and Categories selection and order
+2. Behavior Setting
+
+== How to use ==
+
+You can use this menu everywhere.
+
+* On your sidebar as a ‘widget‘
+* Inside of post/page content using: [a_image_menu]
+* On your theme php files using: echo do_shortcode('[a_image_menu]');
