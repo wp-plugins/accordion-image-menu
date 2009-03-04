@@ -10,14 +10,14 @@ Versatile Accordion Image Menu. Allows to use your medium size attached images a
 
 == Description ==
 
-This a different menu that use your post images as a background. You can insert the menu whereever you want: content, php files or widget if your theme allows it. Visit the [plugin page]:http://web-argument.com/accordion-image-menu-plugin/ for demo and details.
+This is a different menu that uses your post images as a background. You can insert the menu wherever you want: content, php files or widget if your theme allows it. Visit the <a href="http://web-argument.com/accordion-image-menu-plugin/">plugin page</a> for demo and details.
 
 Special Features:
 
 *   Allows to combine pages and categories and apply order to them
 *   The plugin use the medium size image generated
 *   You can use it to list recent posts
-*   Multiple transitions effects included (Elastic, Bounce, Sine, Pow, Quart, Back, etc)
+*   Multiple transition effects included (Elastic, Bounce, Sine, Pow, Quart, Back, etc)
 *   You can include or not “the title” of the target page 
 *   Compatible with: Firefox 2,3, IE 6, 7 Safari
 
@@ -46,6 +46,6 @@ No, all of your menu items are displayed using simple html tags.
 
 You can use this menu everywhere.
 
-* On your sidebar as a ‘widget‘
+* On the sidebar as a ‘widget‘
 * Inside of post/page content using: [a_image_menu]
-* On your theme php files using: echo do_shortcode('[a_image_menu]');
+* On your theme php files using: <?php echo do_shortcode ('[a_image_menu]'); ?>
