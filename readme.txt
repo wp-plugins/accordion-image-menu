@@ -41,11 +41,3 @@ No, all of your menu items are displayed using simple html tags.
 
 1. Pages and Categories selection and order
 2. Behavior Setting
-
-== How to use ==
-
-You can use this menu everywhere.
-
-* On the sidebar as a ‘widget‘
-* Inside of post/page content using: [a_image_menu]
-* On your theme php files using: <?php echo do_shortcode ('[a_image_menu]'); ?>
