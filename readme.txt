@@ -6,7 +6,7 @@ Requires at least: 2.5
 Tested up to: 2.7.1
 Stable tag: 4.3
 
-Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts and for pages and categories combined.
+Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts, categories and pages.
 
 == Description ==
 
@@ -18,12 +18,12 @@ Special Features:
 *   The plugin use the medium size image generated
 *   You can use it to list recent posts
 *   Multiple transition effects included (Elastic, Bounce, Sine, Pow, Quart, Back, etc)
-*   You can include or not “the title” of the target page 
+*   You can include or not 'the title' of the target page 
 *   Compatible with: Firefox 2,3, IE 6, 7 Safari
 
 == Installation ==
 
-1. Upload “Accordion Image Menu” folder to the ‘/wp-content/plugins/’ directory.
+1. Upload 'Accordion Image Menu' folder to the '/wp-content/plugins/' directory.
 2. Activate the plugin through the ‘Plugins’ menu in WordPress.
 3. Customize the menu under Settings/Accordion Image Menu.
 
@@ -33,7 +33,7 @@ Special Features:
 
 Yes, you can use lightbox, thickbox, etc.
 
-= The menu affect the SEO =
+= The menu affect the SEO? =
 
 No, all of your menu items are displayed using simple html tags.
 
