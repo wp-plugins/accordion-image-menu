@@ -3,7 +3,7 @@ Contributors: Alaingg
 Donate link: http://web-argument.com/accordion-image-menu-plugin/
 Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects
 Requires at least: 2.5
-Tested up to: 2.7.1
+Tested up to: 2.8
 Stable tag: 4.3
 
 Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts, categories and pages.
@@ -41,3 +41,14 @@ No, all of your menu items are displayed using simple html tags.
 
 1. Pages and Categories selection and order
 2. Behavior Setting
+
+== Changelog ==  
+   
+= 1.0 =  
+ * Inicial release.  
+
+   
+= 1.1 = 
+ * Included Open Menu feature 
+ * Included titles variations 
+ * Fixed Jquery interactions 

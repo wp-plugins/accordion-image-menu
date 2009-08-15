@@ -2,8 +2,8 @@
 /*
 Plugin Name: Accordion Image Menu
 Plugin URI: http://web-argument.com/accordion-image-menu-plugin
-Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts and for pages and categories combined.
-Version: 1.0
+Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can combine and order pages, categories and recent posts.  
+Version: 1.1
 Author: Alain Gonzalez
 Author URI: http://web-argument.com/
 */
@@ -28,12 +28,16 @@ $attachments = get_children( array(
 }
 
 
+/**
+ * Get the items
+ */	
 function a_image_m_items(){
 
 $options = get_option('a_i_m');
 	
-/*****************************  Recent Posts *********************************/
-		
+	/**
+	 * Recent Posts
+	 */		
 	if ($options['a_m_type'] == rp){
 	
 			$i = 1;	
@@ -55,8 +59,9 @@ $options = get_option('a_i_m');
 	
 	} else if ($options['a_m_type'] == cp){	
 
-					
-/*****************************  Pages *********************************/
+		/**
+		 * Pages
+		 */
 		if(isset($options['a_pag_or'])){
 			foreach ($options['a_pag_or'] as $m_pages => $order){
 			 
@@ -72,7 +77,10 @@ $options = get_option('a_i_m');
 				
 			}		
          }
-/*****************************  Categories *********************************/
+		 
+		/**
+		 * Categories
+		 */
          if(isset($options['a_cat_or'])){
 			foreach ($options['a_cat_or'] as $m_cat => $order){
 			 
@@ -105,10 +113,9 @@ $options = get_option('a_i_m');
 }
 
 
-
-/*****************************************************************************
-                     The shortcode
-******************************************************************************/
+/**
+ * The shortcode
+ */
 
 function a_image_menu_func($atts) {
 
@@ -122,38 +129,67 @@ function a_image_menu_func($atts) {
 	$closed_height= $options['a_closed_height'];
 	if (!(isset($closed_height))) $closed_height = 100;
 	$inc_title = $options['a_inc_title'];
+	$open = $options['open'];
+	$open_number = 	$options['open_number']; 
 
 	extract(shortcode_atts(array('post_id' => $post	), $atts));		
 	
 	$the_items = a_image_m_items();
-	
+
 	if(isset($the_items)) {
 		ksort($the_items);
 			
-		//echo "<pre>".htmlspecialchars(  print_r($options,true)  )."</pre>";
-		
-		$image_menu = "<div id=\"imageMenu\">";
-		$image_menu .= "<ul>";	
+		$image_menu = "<div id=\"imageMenu\">\n";
+		$image_menu .= "<ul>\n";	
 		
 		foreach ($the_items as $the_item){
 		  
-		  $image_menu .= "<li>";
-		  $image_menu .= "<a href=\"".$the_item['link']."\" title = \"".$the_item['title']."\" style=\"background-image:url(".$the_item['img'].")\" >";
+		  $image_menu .= "<li>\n";
+		  $image_menu .= "<a href=\"".$the_item['link']."\" style=\"background-image:url(".$the_item['img'].")\" >\n";
 			  
-		  if (isset($inc_title)) $image_menu .= "<span class=\"vai_title_shadow\" >".$the_item['title']."</span><span class=\"vai_title\" >".$the_item['title']."</span>";
+		  if (isset($inc_title)) $image_menu .= "<span class=\"vai_title_shadow\" >".$the_item['title']."</span><span class=\"vai_title\" >".$the_item['title']."</span>\n";
 		  
-		  $image_menu .= " &nbsp;</a></li>";
+		  $image_menu .= " &nbsp;</a></li>\n";
 			
 		}	
-		$image_menu .= "</ul>";
-		$image_menu .= "</div>";	
-		$image_menu .= "<script type=\"text/javascript\">";
+		$image_menu .= "</ul>\n";
+		$image_menu .= "</div>\n";	
+		$image_menu .= "<script type=\"text/javascript\">\n";
+		$image_menu .= "jQuery(function($){\n"; 
 		
-		$image_menu .= "jQuery(\"#imageMenu a\").hover(  function () {    jQuery(this).children().fadeOut();  },  function () {   jQuery(this).children().fadeIn();  });";	
+		switch ($inc_title) {
+			case "itmo":
+		$image_menu .= "$(document).ready(function () { $('#imageMenu a').children().hide();});\n";			
+		$image_menu .="$('#imageMenu a').hover( function () { $(this).children().fadeIn(); }, function () { $(this).children().fadeOut(); }); \n";
+				break;
+			case "itnev":
+		$image_menu .= "$(document).ready(function () { $('#imageMenu a').children().hide();});\n";
+				break;
+			 default:
+		$image_menu .= "$(\"#imageMenu a\").hover(  function () {    $(this).children().fadeOut();  },  function () {   $(this).children().fadeIn();  });";
+				break;				
+		}
+	
+			
+		$image_menu .="});\n";				
+		$image_menu .= "\n window.addEvent('domready', function(){\n";
+		$image_menu .= "var myMenu = new ImageMenu($$('#imageMenu a'),{openHeight:".$open_height.", transition: Fx.Transitions.".$effect.".easeOut,";
 		
-		$image_menu .= "window.addEvent('domready', function(){";
-		$image_menu .= "var myMenu = new ImageMenu($$('#imageMenu a'),{openHeight:".$open_height.", transition: Fx.Transitions.".$effect.".easeOut, duration:".$options['a_dur'].", onOpen:function(e,i){window.open(e);}});  });";
-		$image_menu .= "</script>";	
+		switch ($open) {
+			case "randomly":
+		$image_menu .= "open:".rand(0, count($the_items)-1).",";
+				break;
+			case "open_num":
+		$image_menu .= "open:".$open_number.",";
+				break;
+			 default:
+
+				break;				
+		}		
+		
+	
+		$image_menu .= "duration:".$options['a_dur'].", onOpen:function(e,i){window.open(e);}});  });\n";
+		$image_menu .= "</script>\n";	
 		
 		return $image_menu;
 	}
@@ -164,11 +200,9 @@ add_shortcode('a_image_menu', 'a_image_menu_func');
 add_action('admin_menu', 'a_img_menu_set');
 
 
-/****************************************************************************************************
-                                      Header                                                                                       
-/****************************************************************************************************/
-
-
+/**
+ *  Header  
+ */
 function a_image_menu_head() {	
 
 	$options = get_option('a_i_m');
@@ -202,6 +236,7 @@ function a_image_menu_head() {
 	$a_image_menu_header .= "width: ".$m_width."px;\n";
 	$a_image_menu_header .= "}\n";
 	$a_image_menu_header .= "</style>\n";
+    $a_image_menu_header .=  "\n<!-- / Accordion Image Menu -->\n";	
             
 print($a_image_menu_header);
 }
@@ -210,10 +245,9 @@ add_action('wp_head', 'a_image_menu_head');
 wp_enqueue_script('jquery'); 
 
 
-/*****************************************************************************
-                     The widget
-******************************************************************************/
-
+/**
+ *  The widget 
+ */
 function a_image_menu_w_register() {
 
 	function a_image_menu_w_op() {
@@ -238,10 +272,10 @@ function a_image_menu_w_register() {
 }
 add_action('init', 'a_image_menu_w_register');
 
-/********************************************************************************
-                                       Settings                                                                                        
-/********************************************************************************/
 
+/**
+ *   Settings  
+ */
 function a_img_menu_set() {
     add_options_page('Accordion Image Menu', 'Accordion Image Menu', 10, 'accordion-image-menu', 'a_image_menu_page');	 
 }
@@ -249,13 +283,11 @@ function a_img_menu_set() {
 function a_image_menu_page() {
 
 $categories = get_categories();
-$trans_type = array("Back","Bounce","Cubic","Elastic","Expo", "Linear","Pow","Quad","Quart","Quint","Sine");
+$trans_type = array("Back","Bounce","Cubic","Elastic","Expo","Pow","Quad","Quart","Quint","Sine");
 
 $options = get_option('a_i_m');
 
 	if(isset($_POST['Submit'])){
-	
-	//echo "<pre>".htmlspecialchars(  print_r($_POST,true)  )."</pre>";
 	
 		$newoptions['a_post_number'] = $_POST['post_number'];
 		$newoptions['a_cat_p'] = $_POST['cat_p'];
@@ -268,6 +300,8 @@ $options = get_option('a_i_m');
 		$newoptions['a_inc_title'] = $_POST['inc_title'];
 		$newoptions['a_effect'] = $_POST['effect'];
 		$newoptions['a_dur'] = $_POST['dur'];
+		$newoptions['open'] = $_POST['open'];
+		$newoptions['open_number'] = $_POST['open_number'];				
 
 		if ( $options != $newoptions ) {
 			$options = $newoptions;
@@ -290,32 +324,38 @@ $options = get_option('a_i_m');
 		$inc_title = $options['a_inc_title'];
 		$effect = $options['a_effect'];
 		$dur= $options['a_dur'];
+		$open= $options['open'];
+		$open_number= $options['open_number'];				
 		
 ?>	 	         
 
 <script type="text/javascript">
 
- jQuery(document).ready(function(){
-	 if (jQuery("input[name=m_type]:checked").val() == 'cp')
-		jQuery("#a_menu_type_rp").hide();
-	 else  if (jQuery("input[name=m_type]:checked").val() == 'rp')   
-		jQuery("#a_menu_type_cp").hide();
-	 else	{
-	    jQuery("#a_menu_type_cp").hide();
-		jQuery("#a_menu_type_rp").hide();
-	}		
-	 
-	 jQuery("input[name=m_type]").click(function(){ 
-		if (jQuery("input[name=m_type]:checked").val() == 'cp'){
-			jQuery("#a_menu_type_rp").slideUp();
-			jQuery("#a_menu_type_cp").slideDown();
-		}else if (jQuery("input[name=m_type]:checked").val() == 'rp'){
-			jQuery("#a_menu_type_cp").slideUp();
-			jQuery("#a_menu_type_rp").slideDown();
-		}  
-	});
+jQuery(function($){
 
- });
+	 $(document).ready(function(){
+		 if ($("input[name=m_type]:checked").val() == 'cp')
+			$("#a_menu_type_rp").hide();
+		 else  if ($("input[name=m_type]:checked").val() == 'rp')   
+			$("#a_menu_type_cp").hide();
+		 else	{
+			$("#a_menu_type_cp").hide();
+			$("#a_menu_type_rp").hide();
+		}		
+		 
+		 $("input[name=m_type]").click(function(){ 
+			if ($("input[name=m_type]:checked").val() == 'cp'){
+				$("#a_menu_type_rp").slideUp();
+				$("#a_menu_type_cp").slideDown();
+			}else if ($("input[name=m_type]:checked").val() == 'rp'){
+				$("#a_menu_type_cp").slideUp();
+				$("#a_menu_type_rp").slideDown();
+			}  
+		});
+	
+	 });
+});
+ 
 </script>
 
 
@@ -327,7 +367,7 @@ $options = get_option('a_i_m');
 
 <h3>Use the Menu for:</h3>
 
-<p><input name="m_type" type="radio" value="rp" <?php if($m_type=="rp") echo'checked' ?>/> <b>Recent Posts</b></p>
+<p><input name="m_type" type="radio" value="rp" <?php if(($m_type=="rp")||(empty($m_type))) echo'checked' ?>/> <b>Recent Posts</b></p>
 
     <div id="a_menu_type_rp">
     
@@ -427,13 +467,58 @@ px </td>
 
 <hr />
 <h3> Menu Behaviour </h3>
-<table width="100%" cellpadding="10" class="form-table">  
+<table width="100%" cellpadding="10" class="form-table">
+    <tr valign="top">
+        <td width="200" align="left" colspan="2">
+          <strong>Titles:</strong>
+        </td>
+    </tr>  
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="inc_title" type="checkbox" value="it" <?php if ($inc_title == "it") echo "checked=\"checked\"" ?>/>
+  	  <input name="inc_title" type="radio" value="it" <?php if (($inc_title == "it")||(empty($inc_title))) echo "checked=\"checked\"" ?>/>
   	</td>
-  	<td align="left" scope="row">Include the Title</td>
-  </tr>  
+  	<td align="left" scope="row">Always shows the titles</td>
+  </tr> 
+  <tr valign="top">
+  	<td width="200" align="right">
+  	  <input name="inc_title" type="radio" value="itmo" <?php if ($inc_title == "itmo") echo "checked=\"checked\"" ?>/>
+  	</td>
+  	<td align="left" scope="row">Shows the titles only with the mouseover event</td>
+  </tr> 
+  <tr valign="top">
+  	<td width="200" align="right">
+  	  <input name="inc_title" type="radio" value="itnev" <?php if ($inc_title == "itnev") echo "checked=\"checked\"" ?>/>
+  	</td>
+  	<td align="left" scope="row">Never shows the titles</td>
+  </tr>
+    <tr valign="top">
+        <td width="200" align="left" colspan="2">
+          <strong>Open the menu:</strong>
+        </td>
+    </tr>
+    <tr valign="top">
+        <td width="200" align="right">
+          <input name="open" type="radio" value="none" <?php if (( $open == "none") || (empty($open))) echo "checked=\"checked\"" ; ?>/>
+        </td>
+        <td align="left" scope="row">None</td>
+    </tr>
+    <tr valign="top">
+        <td width="200" align="right">
+          <input name="open" type="radio" value="randomly" <?php if ( $open == "randomly") echo "checked=\"checked\"" ?>/>
+        </td>
+        <td align="left" scope="row">Randomly</td>
+    </tr>        
+    <tr valign="top">
+        <td width="200" align="right">
+          <input name="open" type="radio" value="open_num" <?php if ( $open == "open_num") echo "checked=\"checked\"" ?>/>
+        </td>
+        <td align="left" scope="row">In the position <input name="open_number" type="text" value="<?php if ( empty($open_number)) echo 0; else echo $open_number ?>" size="2"/></td>
+    </tr>
+    <tr valign="top">
+        <td width="200" align="left" colspan="2">
+          <strong>Effects:</strong>
+        </td>
+    </tr>
   <tr valign="top">
   	<td width="200" align="right">
   	  <select name="effect">
