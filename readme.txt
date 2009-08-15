@@ -39,8 +39,10 @@ No, all of your menu items are displayed using simple html tags.
 
 == Screenshots ==
 
-1. Pages and Categories selection and order
-2. Behavior Setting
+1. The Menu
+2. Option Page Location
+3. Settings 1
+4. Settings 2
 
 == Changelog ==  
    
