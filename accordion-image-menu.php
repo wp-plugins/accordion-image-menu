@@ -293,7 +293,7 @@ if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_opti
 
         $image_menu =  "\n<!-- Accordion Image Menu -->\n";		
 		
-		$total_dim =  ($closed + $border) * count($the_items);
+		$total_dim =  ($closed_d + $border) * count($the_items);
 		
 		// horizontal
 		if ($position == 'horizontal') {
@@ -301,7 +301,7 @@ if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_opti
 			$div_height = $fixed_d;
 			$div_width = $total_dim+10;
 			$a_height = $fixed_d;
-			$a_width = $closed;
+			$a_width = $closed_d;
 			$border_style = "border-right:".$border."px solid #FFFFFF;";			
 		
         // vertical		
@@ -309,7 +309,7 @@ if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_opti
 		
 			$div_height = $total_dim;
 			$div_width = $fixed_d;
-			$a_height = $closed;
+			$a_height = $closed_d;
 			$a_width = $fixed_d;
 			$border_style = "border-bottom:".$border."px solid #FFFFFF;";
 				
@@ -355,7 +355,7 @@ if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_opti
 			break;				
 		}
 	
-		$image_menu .= "var myMenu_".$random." = new ImageMenu($$('#".$image_menu_div." a'),{openDim:".$open.", transition: Fx.Transitions.".$effect.".easeOut,";
+		$image_menu .= "var myMenu_".$random." = new ImageMenu($$('#".$image_menu_div." a'),{openDim:".$open_d.", transition: Fx.Transitions.".$effect.".easeOut,";
 
 		switch ($open_type) {
 			case "randomly":
