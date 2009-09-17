@@ -1,6 +1,6 @@
 === Accordion Image Menu ===
 Contributors: Alaingg
-Donate link: http://web-argument.com/accordion-image-menu-plugin/
+Donate link: http://web-argument.com/accordion-image-menu-v-20/
 Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects
 Requires at least: 2.5
 Tested up to: 2.8
@@ -10,7 +10,7 @@ Versatile Accordion Image Menu. Allows to use your medium size attached images a
 
 == Description ==
 
-This is a different menu that uses your post images as a background. You can insert the menu wherever you want: content, php files or widget if your theme allows it. Visit the <a href="http://web-argument.com/accordion-image-menu-plugin/">plugin page</a> for demo and details.
+This is a different menu that uses your post images as a background. You can insert the menu wherever you want: content, php files or widget if your theme allows it. Visit the <a href="http://web-argument.com/accordion-image-menu-v-20/">plugin page</a> for demo and details.
 
 Special Features:
 
@@ -48,9 +48,14 @@ No, all of your menu items are displayed using simple html tags.
    
 = 1.0 =  
  * Inicial release.  
-
    
 = 1.1 = 
  * Included Open Menu feature 
  * Included titles variations 
  * Fixed Jquery interactions 
+ 
+= 2.0 = 
+ * Allowed horizontal position
+ * Included shortcode options 
+ * Included titles background
+ * More than one menu by pages

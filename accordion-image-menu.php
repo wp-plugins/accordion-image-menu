@@ -3,19 +3,106 @@
 Plugin Name: Accordion Image Menu
 Plugin URI: http://web-argument.com/accordion-image-menu-plugin
 Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can combine and order pages, categories and recent posts.  
-Version: 1.1
+Version: 2.0
 Author: Alain Gonzalez
 Author URI: http://web-argument.com/
 */
 
+// Default Values
+
+$d_aim_options = array(
+						'position' => 'vertical',
+						'type' => 'rp',
+						'post_number' => 5,
+						'effect' => 'Sine',
+						'open' => 200,
+						'closed' => 100,
+						'fixed_d' => get_option('medium_size_w'),						
+						'dur' => 300,						
+						'border' => 2,
+						'open_type' => 'open_num',
+						'element_open' => 1
+ 						);
+
+
+/**
+ *  Header  
+ */
+function a_image_menu_head() {	
+
+    $a_image_menu_header =  "\n<!-- Accordion Image Menu -->\n";		
+    $a_image_menu_header .= "<script type=\"text/javascript\" src=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/js/mootools.js\"></script>\n";
+	$a_image_menu_header .= "<script type=\"text/javascript\" src=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/js/accordion-image-menu.js\"></script>\n";			
+	$a_image_menu_header .= "\t<link href=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/css/imageMenu.css\" rel=\"stylesheet\" type=\"text/css\" />\n";	
+	
+    $a_image_menu_header .=  "\n<!-- / Accordion Image Menu -->\n";	
+            
+print($a_image_menu_header);
+}
+
+add_action('wp_head', 'a_image_menu_head');
+wp_enqueue_script('jquery'); 
+
+
+
+
+/**
+ *  The widget 
+ */
+ 
+function a_image_menu_w_register() {
+
+	function a_image_menu_w_op() {
+	
+	$options = get_option('a_i_m'); 
+	
+	if ($_POST) {
+	$options['im_title'] = htmlspecialchars($_POST['im_title']);
+	update_option('a_i_m', $options);
+	}
+	
+		
+	_e('Title'); ?>	
+	 <input name="im_title" type="text" value="<?php echo $options['im_title']; ?>" /><br /><br /> 	
+	 <p> You can edit the Image Menu Widget under Settings/ Accordion Image Menu </p>
+	<?php
+	
+	}
+	
+	function a_image_menu_widget() {
+
+				$options = get_option('a_i_m');
+
+				 echo $before_widget; 
+              
+              		if (!empty($options['im_title'])) echo $before_title."<h2 class='widgettitle'>".$options['im_title']."</h2>". $after_title;
+					
+					echo do_shortcode('[a_image_menu]');
+					
+                 echo $after_widget;
+		
+	}
+	register_sidebar_widget('Accordion Image Menu', 'a_image_menu_widget');
+	register_widget_control('Accordion Image Menu', 'a_image_menu_w_op','250','300');	  
+
+}
+add_action('init', 'a_image_menu_w_register');
+
+
+
+
+/**
+ * Get thumbnails
+ */	
+
 function a_m_image_url($the_parent){
 
 $attachments = get_children( array(
-				'post_parent' => $the_parent, 
-				'post_type' => 'attachment', 
-				'post_mime_type' => 'image', 
-				'order' => 'DESC', 
-				'numberposts' => 1) );
+						'post_parent' => $the_parent, 
+						'post_type' => 'attachment', 
+						'post_mime_type' => 'image', 
+						'order' => 'DESC', 
+						'numberposts' => 1) );
 				
 				if($attachments == true) :
 					foreach($attachments as $id => $attachment) :
@@ -28,42 +115,66 @@ $attachments = get_children( array(
 }
 
 
+
+
 /**
  * Get the items
  */	
-function a_image_m_items(){
+function a_image_m_items($num, $cat, $type){
 
+global $d_aim_options;
 $options = get_option('a_i_m');
+
+if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_options;
 	
 	/**
 	 * Recent Posts
 	 */		
-	if ($options['a_m_type'] == rp){
+	if ($type == 'rp'){
 	
-			$i = 1;	
+			$i = 0;	
+
+if 	(empty($cat)) $my_query = get_posts(array('numberposts'=>-1));
+else if (!is_array($cat)){				
+			
+			$mcat = split (",",$cat);
+			
+			$my_query = get_posts(array('category__in'=>$mcat,'numberposts'=>-1));
+} else {
+
+			$my_query = get_posts(array('category__in'=>$cat,'numberposts'=>-1));
+
+}
+
 	
-			$my_query =new WP_Query(array('category__in'=>$options['a_cat_p'],'showposts'=>$options['a_post_number']));
-	
-			while ($my_query->have_posts()) : $my_query->the_post(); 	
+			foreach ($my_query  as $post) {	
 				
-				$the_image = a_m_image_url(get_the_ID());
-				$the_title = get_the_title();
-				$the_link = get_permalink(get_the_ID());
+				if ($i == $num) break;
 				
-				if (isset($the_image))	$item[$i] = array("img" => $the_image,"title" => $the_title,"link" => $the_link);
-				 
-				$i ++;			
+				$the_image = a_m_image_url($post -> ID);
+				$the_title = $post -> post_title;
+				$the_link = $post -> guid;
+				
+				if (isset($the_image))	{
+				
+					$item[$i] = array("img" => $the_image,"title" => $the_title,"link" => $the_link);
+					 
+					$i ++;
+
+				}			
 	  
-			endwhile; 
+			} 
 	
 	
-	} else if ($options['a_m_type'] == cp){	
+	} 
+	
+	else if ($type == 'cp'){	
 
 		/**
 		 * Pages
 		 */
-		if(isset($options['a_pag_or'])){
-			foreach ($options['a_pag_or'] as $m_pages => $order){
+		if(isset($options['pag_or'])){
+			foreach ($options['pag_or'] as $m_pages => $order){
 			 
 				 if (is_numeric($order) and ($order != 0)) {
 					 
@@ -81,36 +192,34 @@ $options = get_option('a_i_m');
 		/**
 		 * Categories
 		 */
-         if(isset($options['a_cat_or'])){
-			foreach ($options['a_cat_or'] as $m_cat => $order){
+         if(isset($options['cat_or'])){
+			foreach ($options['cat_or'] as $m_cat => $order){
 			 
-				 if (is_numeric($order) and ($order != 0)) {			 
-					 
-						$my_query =new WP_Query(array('cat'=>$m_cat));							
+				 if (is_numeric($order) and ($order != 0)) {
+									 
+						$my_query = get_posts(array('cat'=>$m_cat,'numberposts'=>1));							
 							
 							$the_image = "";							
 										
-							while (   ($my_query->have_posts()) and ($the_image == "") ) : $my_query->the_post();
-																		
-								$the_image = a_m_image_url(get_the_ID());								
-								foreach((get_the_category()) as $category) $the_title = $category->cat_name;
+							foreach ($my_query  as $post) {	
+																	
+								$the_image = a_m_image_url($post -> ID);							
+								$the_title = get_cat_name($m_cat);
 								$the_link = get_category_link($m_cat);	
 								
 								if (isset($the_image))	$item[$order] = array("img" => $the_image,"title" => $the_title,"link" => $the_link);					
 					  
-							endwhile;
+							}
 				}		
 			}
 		}	
 
 	}		
 	
-	global $a_m_image_items;	
-	$a_m_image_items = count($item);
-	
 	return $item;
 
 }
+
 
 
 /**
@@ -119,78 +228,160 @@ $options = get_option('a_i_m');
 
 function a_image_menu_func($atts) {
 
+	global $d_aim_options;
+
 	$options = get_option('a_i_m');
-	$effect = $options['a_effect'];
-	if (!(isset($effect))) $effect = "Back";
-	$m_width = $options['a_m_width'];
-	if (!(isset($m_width))) $m_width = get_option('medium_size_w');
-	$open_height = $options['a_open_height'];
-	if (!(isset($open_height))) $open_height = get_option('medium_size_h');
-	$closed_height= $options['a_closed_height'];
-	if (!(isset($closed_height))) $closed_height = 100;
-	$inc_title = $options['a_inc_title'];
-	$open = $options['open'];
-	$open_number = 	$options['open_number']; 
 
-	extract(shortcode_atts(array('post_id' => $post	), $atts));		
+if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_options;
+
+   //position
+	$position = $options['position'];
 	
-	$the_items = a_image_m_items();
+	//type of menu recent post or cat/pages
+	$type = $options['type'];			
+	$post_number = $options['post_number'];
+	
+	//type of menu cat/pages
+	$m_cat = $options['m_cat'];		
+	$cat_or = $options['cat_or'];
+	$pag_or = $options['pag_or'];
+	
+	//dimensions
+	$fixed_d = $options['fixed_d'];
+	$open = $options['open'];
+	$closed = $options['closed'];
+	$border = $options['border'];	
+	
+	//title	
+	$inc_title = $options['inc_title'];
+	$title_bg = $options['title_bg'];
+	
+	//effects
+	$open_type = $options['open_type'];		
+	$element_open = $options['element_open'];		
+	$effect = $options['effect'];
+	$dur = $options['dur'];
+	
 
+	extract(shortcode_atts(array(
+								'position' => $position,
+								'cat' => $m_cat,
+								'number' => '',
+								'effect' => $effect,
+								'closed_d' => $closed,
+								'open_d' => $open,
+								'fixed_d' => $fixed_d,
+								'duration' => $dur,
+								'border' => $border,
+								'element_open' => '',
+								'title_bg' => $title_bg
+								), $atts));		
+
+
+	if (empty($number))  $the_items = a_image_m_items($post_number, $cat, $type);
+	else $the_items = a_image_m_items($number, $cat, 'rp');	
+	
 	if(isset($the_items)) {
 		ksort($the_items);
-			
-		$image_menu = "<div id=\"imageMenu\">\n";
-		$image_menu .= "<ul>\n";	
+
+
+
 		
-		foreach ($the_items as $the_item){
-		  
-		  $image_menu .= "<li>\n";
-		  $image_menu .= "<a href=\"".$the_item['link']."\" style=\"background-image:url(".$the_item['img'].")\" >\n";
+		$random = wp_generate_password(4, false);
+		
+		$image_menu_div = "imageMenu_".$random;
+
+        $image_menu =  "\n<!-- Accordion Image Menu -->\n";		
+		
+		$total_dim =  ($closed + $border) * count($the_items);
+		
+		// horizontal
+		if ($position == 'horizontal') {
+		
+			$div_height = $fixed_d;
+			$div_width = $total_dim+10;
+			$a_height = $fixed_d;
+			$a_width = $closed;
+			$border_style = "border-right:".$border."px solid #FFFFFF;";			
+		
+        // vertical		
+		} else {
+		
+			$div_height = $total_dim;
+			$div_width = $fixed_d;
+			$a_height = $closed;
+			$a_width = $fixed_d;
+			$border_style = "border-bottom:".$border."px solid #FFFFFF;";
+				
+        }
+		
+		$image_menu .= "<div id='".$image_menu_div."' style='height:".$div_height."px; width:".$div_width."px;' class='imageMenu' >\n";		
+	
+			foreach ($the_items as $the_item){
+
+			  $image_menu .= "<a href='".$the_item['link']."' style='background-image:url(".$the_item['img']."); height:".$a_height."px; width:".$a_width."px; ".$border_style."' >\n";
+				  
+			  if ($inc_title != 'itnev') {
 			  
-		  if (isset($inc_title)) $image_menu .= "<span class=\"vai_title_shadow\" >".$the_item['title']."</span><span class=\"vai_title\" >".$the_item['title']."</span>\n";
-		  
-		  $image_menu .= " &nbsp;</a></li>\n";
+			  $image_menu .= "<span class='vai_title_shadow' >".$the_item['title']."</span><span class='vai_title ";
+			  
+			  if (isset($title_bg)) $image_menu .= "imageMenu_bg";
+			  
+			  $image_menu .= "'>".$the_item['title']."</span>\n";
+			  
+			  }
+			  
+			  $image_menu .= " &nbsp;</a>\n";
+				
+			}
+
+		$image_menu .= "</div>\n";		
+
 			
-		}	
-		$image_menu .= "</ul>\n";
-		$image_menu .= "</div>\n";	
 		$image_menu .= "<script type=\"text/javascript\">\n";
 		$image_menu .= "jQuery(function($){\n"; 
-		
+		$image_menu .= "$(document).ready(function () {\n"; 
+					   
 		switch ($inc_title) {
 			case "itmo":
-		$image_menu .= "$(document).ready(function () { $('#imageMenu a').children().hide();});\n";			
-		$image_menu .="$('#imageMenu a').hover( function () { $(this).children().fadeIn(); }, function () { $(this).children().fadeOut(); }); \n";
-				break;
+				$image_menu .= "$('#".$image_menu_div." a').children().hide();\n";			
+				$image_menu .= "$('#".$image_menu_div." a').hover( function () { $(this).children().fadeIn(); }, function () { $(this).children().fadeOut(); }); \n";
+			break;
 			case "itnev":
-		$image_menu .= "$(document).ready(function () { $('#imageMenu a').children().hide();});\n";
-				break;
-			 default:
-		$image_menu .= "$(\"#imageMenu a\").hover(  function () {    $(this).children().fadeOut();  },  function () {   $(this).children().fadeIn();  });";
-				break;				
+				$image_menu .= "$('#".$image_menu_div." a').children().hide();\n";
+			break;
+			default:
+				$image_menu .= "$('#".$image_menu_div." a').hover(  function () {    $(this).children().fadeOut();  },  function () {   $(this).children().fadeIn(); });\n";
+			break;				
 		}
 	
-			
-		$image_menu .="});\n";				
-		$image_menu .= "\n window.addEvent('domready', function(){\n";
-		$image_menu .= "var myMenu = new ImageMenu($$('#imageMenu a'),{openHeight:".$open_height.", transition: Fx.Transitions.".$effect.".easeOut,";
-		
-		switch ($open) {
-			case "randomly":
-		$image_menu .= "open:".rand(0, count($the_items)-1).",";
-				break;
-			case "open_num":
-		$image_menu .= "open:".$open_number.",";
-				break;
-			 default:
+		$image_menu .= "var myMenu_".$random." = new ImageMenu($$('#".$image_menu_div." a'),{openDim:".$open.", transition: Fx.Transitions.".$effect.".easeOut,";
 
-				break;				
+		switch ($open_type) {
+			case "randomly":
+			    if($atts['element_open']>0) $image_menu .= "open:".($atts['element_open']-1).",";
+				else if($atts['element_open']== 'randomly') $image_menu .= "open:".rand(0, count($the_items)-1).",";
+				else $image_menu .= "open:".rand(0, count($the_items)-1).",";
+			break;
+			case "open_num":
+			    if($atts['element_open']>0) $value = $atts['element_open']-1;
+			    if ( $element_open <= 0) $value = 0;
+				else $value = $element_open -1;
+				
+				$image_menu .= "open:".$value.",";
+			break;
+			default:
+			    if($atts['element_open']>0) $image_menu .= "open:".$atts['element_open'].",";
+				if($atts['element_open']== 'randomly') $image_menu .= "open:".rand(0, count($the_items)-1).",";
+			break;				
 		}		
 		
-	
-		$image_menu .= "duration:".$options['a_dur'].", onOpen:function(e,i){window.open(e);}});  });\n";
-		$image_menu .= "</script>\n";	
-		
+		$image_menu .= "duration:".$duration.", pos:'".$position."'});\n";
+		$image_menu .= "});\n";
+		$image_menu .="});\n";
+		$image_menu .= "</script>\n";
+		$image_menu .=  "\n<!-- Accordion Image Menu -->\n";		
+
 		return $image_menu;
 	}
 }
@@ -200,77 +391,6 @@ add_shortcode('a_image_menu', 'a_image_menu_func');
 add_action('admin_menu', 'a_img_menu_set');
 
 
-/**
- *  Header  
- */
-function a_image_menu_head() {	
-
-	$options = get_option('a_i_m');
-	
-	$effect = $options['a_effect'];
-	if (!(isset($effect))) $effect = "Back";
-	$m_width = $options['a_m_width'];
-	if (!(isset($m_width))) $m_width = get_option('medium_size_w');
-	$open_height = $options['a_open_height'];
-	if (!(isset($open_height))) $open_height = get_option('medium_size_h');
-	$closed_height= $options['a_closed_height'];
-	if (!(isset($closed_height))) $closed_height = 100;
-	$m_height = count(a_image_m_items()) * ($closed_height+2);
-
-    $a_image_menu_header =  "\n<!-- Accordion Image Menu -->\n";		
-    $a_image_menu_header .= "<script type=\"text/javascript\" src=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/js/mootools.js\"></script>\n";
-	$a_image_menu_header .= "<script type=\"text/javascript\" src=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/js/imageMenuVert.js\"></script>\n";			
-	$a_image_menu_header .= "\t<link href=\"".get_bloginfo('url')."/wp-content/plugins/accordion-image-menu/css/vimageMenu.css\" rel=\"stylesheet\" type=\"text/css\" />\n";	
-	
-	$a_image_menu_header .= "<style type=\"text/css\">\n";
-	$a_image_menu_header .= "#imageMenu ul {\n";
-	$a_image_menu_header .= "height: ".$m_height."px;\n";
-	$a_image_menu_header .= "width: ".$m_width."px;\n";
-	$a_image_menu_header .= "}\n";
-	$a_image_menu_header .= "#imageMenu ul li a {\n";
-	$a_image_menu_header .= "height: ".$closed_height."px;\n";
-	$a_image_menu_header .= "width: ".$m_width."px;\n";
-	$a_image_menu_header .= "}\n";
-	$a_image_menu_header .= "#imageMenu {\n";
-	$a_image_menu_header .= "height: ".$m_height."px;\n";
-	$a_image_menu_header .= "width: ".$m_width."px;\n";
-	$a_image_menu_header .= "}\n";
-	$a_image_menu_header .= "</style>\n";
-    $a_image_menu_header .=  "\n<!-- / Accordion Image Menu -->\n";	
-            
-print($a_image_menu_header);
-}
-
-add_action('wp_head', 'a_image_menu_head');
-wp_enqueue_script('jquery'); 
-
-
-/**
- *  The widget 
- */
-function a_image_menu_w_register() {
-
-	function a_image_menu_w_op() {
-	
-	?>
-	<p>	You can edit the Menu Image Widget under Settings/ Accordion Image Menu </p>
-	<?php
-	
-	}
-	
-	function a_image_menu_widget() {
-	
-		echo $before_widget; 
-		echo do_shortcode('[a_image_menu]');
-		echo $after_widget; 
-		
-	}
-	register_sidebar_widget('Accordion Image Menu', 'a_image_menu_widget');
-	register_widget_control('Accordion Image Menu', 'a_image_menu_w_op','250','300');	  
-	register_sidebar_widget('Accordion Image Menu','a_image_menu_widget');
-
-}
-add_action('init', 'a_image_menu_w_register');
 
 
 /**
@@ -282,26 +402,48 @@ function a_img_menu_set() {
 
 function a_image_menu_page() {
 
+global $d_aim_options;
+
 $categories = get_categories();
 $trans_type = array("Back","Bounce","Cubic","Elastic","Expo","Pow","Quad","Quart","Quint","Sine");
 
 $options = get_option('a_i_m');
 
+
+if  ((empty($options)) ||  (empty($options['position']))) $options = $d_aim_options;
+
+
 	if(isset($_POST['Submit'])){
-	
-		$newoptions['a_post_number'] = $_POST['post_number'];
-		$newoptions['a_cat_p'] = $_POST['cat_p'];
-		$newoptions['a_m_type'] = $_POST['m_type'];
-		$newoptions['a_cat_or'] = $_POST['cat_or'];
-		$newoptions['a_pag_or'] = $_POST['pag_or'];
-		$newoptions['a_m_width'] = $_POST['m_width'];
-		$newoptions['a_open_height'] = $_POST['open_height'];
-		$newoptions['a_closed_height'] = $_POST['closed_height'];
-		$newoptions['a_inc_title'] = $_POST['inc_title'];
-		$newoptions['a_effect'] = $_POST['effect'];
-		$newoptions['a_dur'] = $_POST['dur'];
+
+        //position
+		$newoptions['position'] = $_POST['position'];
+		
+		//type of menu recent post or cat/pages
+		$newoptions['type'] = $_POST['type'];			
+		$newoptions['post_number'] = $_POST['post_number'];
+		
+		//type of menu cat/pages
+		$newoptions['m_cat'] = $_POST['m_cat'];		
+		$newoptions['cat_or'] = $_POST['cat_or'];
+		$newoptions['pag_or'] = $_POST['pag_or'];
+		
+		//dimensions
+		$newoptions['fixed_d'] = $_POST['fixed_d'];
 		$newoptions['open'] = $_POST['open'];
-		$newoptions['open_number'] = $_POST['open_number'];				
+		$newoptions['closed'] = $_POST['closed'];
+		$newoptions['border'] = $_POST['border'];	
+		
+		//title	
+		$newoptions['inc_title'] = $_POST['inc_title'];
+		$newoptions['title_bg'] = $_POST['title_bg'];
+		
+		//effects
+		$newoptions['open_type'] = $_POST['open_type'];		
+		$newoptions['element_open'] = $_POST['element_open'];		
+		$newoptions['effect'] = $_POST['effect'];
+		$newoptions['dur'] = $_POST['dur'];
+
+						
 
 		if ( $options != $newoptions ) {
 			$options = $newoptions;
@@ -313,19 +455,34 @@ $options = get_option('a_i_m');
          
 <?php  }  
 
-		$post_number = $options['a_post_number'];
-		$cat_p = $options['a_cat_p'];
-		$m_type = $options['a_m_type'];
-		$cat_or = $options['a_cat_or'];
-		$pag_or = $options['a_pag_or'];
-		$m_width = $options['a_m_width'];
-		$open_height = $options['a_open_height'];
-		$closed_height= $options['a_closed_height'];
-		$inc_title = $options['a_inc_title'];
-		$effect = $options['a_effect'];
-		$dur= $options['a_dur'];
-		$open= $options['open'];
-		$open_number= $options['open_number'];				
+       //position
+		$position = $options['position'];
+		
+		//type of menu recent post or cat/pages
+		$type = $options['type'];			
+		$post_number = $options['post_number'];
+		
+		//type of menu cat/pages
+		$m_cat = $options['m_cat'];		
+		$cat_or = $options['cat_or'];
+		$pag_or = $options['pag_or'];
+		
+		//dimensions
+		$fixed_d = $options['fixed_d'];
+		$open = $options['open'];
+		$closed = $options['closed'];
+		$border = $options['border'];	
+		
+		//title	
+		$inc_title = $options['inc_title'];
+		$title_bg = $options['title_bg'];
+		
+		//effects
+		$open_type = $options['open_type'];		
+		$element_open = $options['element_open'];		
+		$effect = $options['effect'];
+		$dur = $options['dur'];
+
 		
 ?>	 	         
 
@@ -334,20 +491,20 @@ $options = get_option('a_i_m');
 jQuery(function($){
 
 	 $(document).ready(function(){
-		 if ($("input[name=m_type]:checked").val() == 'cp')
+		 if ($("input[name=type]:checked").val() == 'cp')
 			$("#a_menu_type_rp").hide();
-		 else  if ($("input[name=m_type]:checked").val() == 'rp')   
+		 else  if ($("input[name=type]:checked").val() == 'rp')   
 			$("#a_menu_type_cp").hide();
 		 else	{
 			$("#a_menu_type_cp").hide();
 			$("#a_menu_type_rp").hide();
 		}		
 		 
-		 $("input[name=m_type]").click(function(){ 
-			if ($("input[name=m_type]:checked").val() == 'cp'){
+		 $("input[name=type]").click(function(){ 
+			if ($("input[name=type]:checked").val() == 'cp'){
 				$("#a_menu_type_rp").slideUp();
 				$("#a_menu_type_cp").slideDown();
-			}else if ($("input[name=m_type]:checked").val() == 'rp'){
+			}else if ($("input[name=type]:checked").val() == 'rp'){
 				$("#a_menu_type_cp").slideUp();
 				$("#a_menu_type_rp").slideDown();
 			}  
@@ -358,22 +515,29 @@ jQuery(function($){
  
 </script>
 
-
 <div class="wrap">   
 
 <form method="post" name="options" target="_self">
 
-<h2>Accordion Image Menu Setting</h2>
+<h2>Accordion Image Menu Default Settings</h2><br />
 
-<h3>Use the Menu for:</h3>
+<h3>Position</h3>
 
-<p><input name="m_type" type="radio" value="rp" <?php if(($m_type=="rp")||(empty($m_type))) echo'checked' ?>/> <b>Recent Posts</b></p>
+<p><input name="position" type="radio" value="vertical" <?php if ($position=="vertical") echo "checked=\"checked\"" ?>/> <b>Vertical</b></p>
+<p><input name="position" type="radio" value="horizontal" <?php if ($position=="horizontal") echo "checked=\"checked\"" ?>/> <b>Horizontal</b></p>
+
+<hr/>
+<h3>Use the Menu for</h3>
+
+<p><input name="type" type="radio" value="rp" <?php if ($type=="rp") echo "checked=\"checked\"" ?>/> <b>Recent Posts</b></p>
 
     <div id="a_menu_type_rp">
     
             <table width="100%" cellpadding="10" class="form-table">
             <tr>
-            <td width="200" align="right"><input name="post_number" type="text" size="1" value="<?php if ($post_number=="") echo '5'; else echo $post_number ?>"/></td>
+            <td width="200" align="right">
+			<input name="post_number" value="<?php echo $post_number ?>" size="1" />
+			</td>
             <td align="left" scope="row">Number of Posts</td>
             </tr>
                        
@@ -381,12 +545,13 @@ jQuery(function($){
             <td width="200" align="right"></td>
             <td align="left" scope="row"><b>On the categories</b></td>
             </tr>
-            <?php               
+            <?php
+            
               foreach ($categories as $cat) { ?>
               <tr valign="top">
-                <td width="200" align="right"><input name="cat_p[<?php echo $cat->cat_ID ?>]" type="checkbox" value="<?php echo $cat->cat_ID ?>"
+                <td width="200" align="right"><input name="m_cat[<?php echo $cat->cat_ID ?>]" type="checkbox" value="<?php echo $cat->cat_ID ?>"
                 <?php 
-				if (isset($cat_p))	if (in_array($cat->cat_ID, $cat_p)) echo "checked"?>                                       
+				if (isset($m_cat))	if (in_array($cat->cat_ID, $m_cat)) echo "checked=\"checked\""; ?>                                       
                 /> 
                 <td align="left" scope="row"><?php echo $cat->cat_name ?></td>
               </tr>
@@ -396,7 +561,7 @@ jQuery(function($){
     
     </div>
 
-<p><input name="m_type" type="radio" value="cp" <?php if($m_type=="cp") echo'checked' ?>/> <b>Categories and Pages</b></p>
+<p><input name="type" type="radio" value="cp" <?php if($type=="cp") echo "checked=\"checked\"" ?>/> <b>Categories and Pages</b></p>
 
     <div id="a_menu_type_cp">
     <p>To select a Category or a Page just fill out the "Order" field in front of the item (The Order is the vertical item position on the menu, if you use "0" or leave it "empty" the item will not be included)</p>
@@ -437,33 +602,44 @@ jQuery(function($){
             
     </div>
 
-
 <hr />
+
 <h3>Select the Image Menu Dimensions</h3>
 <p>The menu use the Medium Size Images</p>
 <table width="100%" cellpadding="10" class="form-table">
 
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="m_width" id="m_width" value="<?php if ($m_width != "") echo $m_width; else echo get_option('medium_size_w') ?>" size="2"/> 
+  	  <input name="fixed_d" id="fixed_d" value="<?php echo $fixed_d ?>" size="2"/> 
   	  px
   	</td>
-  	<td align="left" scope="row"><b>Width</b> of the Menu (medium size images width by default)</td>
+  	<td align="left" scope="row"><b>Fixed Dimension</b> of the Menu (<strong>width</strong> for
+  			vertical position, <strong>height</strong> for horizontal position)</td>
   </tr>
  <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="open_height" id="open_height" value="<?php if ($open_height != "") echo $open_height; else echo 250 ?>" size="2"/> 
+  	  <input name="open" id="open" value="<?php echo $open?>" size="2"/> 
   	  px
   	</td>
-  	<td align="left" scope="row"><b>Lines Height</b> when the menu is open (Is the height of the images when the mouse is over them)</td>
+  	<td align="left" scope="row"><b>Open Dimension</b> (Is the dimension of the images when the mouse is over them)</td>
   </tr>  
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="closed_height" id="closed_height" value="<?php if ($closed_height != "") echo $closed_height; else echo "100" ?>" size="2"/>
+  	  <input name="closed" id="closed" value="<?php echo $closed ?>" size="2"/>
 px </td>
-  	<td align="left" scope="row"><b>Lines Height</b> when the menu is closed (Is the height of the images when the menu is not activated)</td>
-  </tr>  
+  	<td align="left" scope="row"><b>Closed </b> <b>Dimension</b> (Is the dimension of the images when the menu is not activated)</td>
+  </tr> 
+  <tr valign="top">
+  	<td width="200" align="right">
+  	  <input name="border" id="border" value="<?php echo $border ?>" size="2"/>
+px </td>
+  	<td align="left" scope="row">Border between elements</td>
+  </tr>     
 </table>
+
+<p class="submit">
+<input type="submit" name="Submit" value="Update Options" class="button-primary"/>
+</p>
 
 <hr />
 <h3> Menu Behaviour </h3>
@@ -472,10 +648,16 @@ px </td>
         <td width="200" align="left" colspan="2">
           <strong>Titles:</strong>
         </td>
-    </tr>  
+    </tr>
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="inc_title" type="radio" value="it" <?php if (($inc_title == "it")||(empty($inc_title))) echo "checked=\"checked\"" ?>/>
+  	  <input name="inc_title" type="radio" value="itnev" <?php if ($inc_title == "itnev") echo "checked=\"checked\"" ?>/>
+  	</td>
+  	<td align="left" scope="row">Never shows the titles</td>
+  </tr>  
+  <tr valign="top">
+  	<td width="200" align="right">
+  	  <input name="inc_title" type="radio" value="it" <?php if (($inc_title == "it") || (empty($inc_title))) echo "checked=\"checked\""; ?> />
   	</td>
   	<td align="left" scope="row">Always shows the titles</td>
   </tr> 
@@ -484,13 +666,13 @@ px </td>
   	  <input name="inc_title" type="radio" value="itmo" <?php if ($inc_title == "itmo") echo "checked=\"checked\"" ?>/>
   	</td>
   	<td align="left" scope="row">Shows the titles only with the mouseover event</td>
-  </tr> 
+  </tr>
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="inc_title" type="radio" value="itnev" <?php if ($inc_title == "itnev") echo "checked=\"checked\"" ?>/>
+  	  <input name="title_bg" type="checkbox" value="true" <?php if ($title_bg) echo "checked=\"checked\"" ?>/>
   	</td>
-  	<td align="left" scope="row">Never shows the titles</td>
-  </tr>
+  	<td align="left" scope="row">Use  Background</td>
+  </tr>  
     <tr valign="top">
         <td width="200" align="left" colspan="2">
           <strong>Open the menu:</strong>
@@ -498,21 +680,21 @@ px </td>
     </tr>
     <tr valign="top">
         <td width="200" align="right">
-          <input name="open" type="radio" value="none" <?php if (( $open == "none") || (empty($open))) echo "checked=\"checked\"" ; ?>/>
+          <input name="open_type" type="radio" value="none" <?php if (( $open_type == "none") || (empty($open_type))) echo "checked=\"checked\"" ; ?>/>
         </td>
         <td align="left" scope="row">None</td>
     </tr>
     <tr valign="top">
         <td width="200" align="right">
-          <input name="open" type="radio" value="randomly" <?php if ( $open == "randomly") echo "checked=\"checked\"" ?>/>
+          <input name="open_type" type="radio" value="randomly" <?php if ( $open_type == "randomly") echo "checked=\"checked\"" ?>/>
         </td>
         <td align="left" scope="row">Randomly</td>
     </tr>        
     <tr valign="top">
         <td width="200" align="right">
-          <input name="open" type="radio" value="open_num" <?php if ( $open == "open_num") echo "checked=\"checked\"" ?>/>
+          <input name="open_type" type="radio" value="open_num" <?php if ( $open_type == "open_num") echo "checked=\"checked\"" ?>/>
         </td>
-        <td align="left" scope="row">In the position <input name="open_number" type="text" value="<?php if ( empty($open_number)) echo 0; else echo $open_number ?>" size="2"/></td>
+        <td align="left" scope="row">In the position <input name="element_open" type="text" value="<?php echo $element_open ?>" size="2"/></td>
     </tr>
     <tr valign="top">
         <td width="200" align="left" colspan="2">
@@ -531,7 +713,7 @@ px </td>
   	<td align="left" scope="row">Transition Effect</td>
   <tr valign="top">
   	<td width="200" align="right">
-  	  <input name="dur" value="<?php if ($dur != "") echo $dur; else echo "500" ?>" size="3"/>
+  	  <input name="dur" value="<?php echo $dur ?>" size="3"/>
   	</td>
   	<td align="left" scope="row">Duration (milliseconds)</td>
   </tr>   
@@ -539,7 +721,7 @@ px </td>
 
 <hr />
 <h3>Use</h3>
- <p>You can use the Accordion Image Menu everywhere.</p>
+ <p>You can use the Accordion Image Menu everywhere using the shortcode.</p>
 <table width="100%" cellpadding="10" class="form-table">
    
   <tr valign="top">
@@ -552,16 +734,25 @@ px </td>
   </tr>
   <tr valign="top">
     <td width="98" align="right">&nbsp;</td>
-    <td align="left" scope="row">On your theme php files using: <strong>echo do_shortcode('[a_image_menu]');</strong></td>
+    <td align="left" scope="row">On your theme files using: <strong>echo do_shortcode('[a_image_menu]');</strong></td>
   </tr>
 </table>
 
 <hr />
-<h3>Feedback</h3>
-<p>If you find this plugin useful or have a suggestion please visit the <a href="http://web-argument.com/accordion-image-menu-plugin">plugin page</a>. All comments are welcome :)</p>
+<div style="width:300px; background-color:#FFFEEB; border:solid 1px #ccc; padding:10px; margin:20px 200px; text-align:center" >
+
+<strong>Feedback</strong>
+
+<p>If you find this plugin useful or have a suggestion please visit the <a href="http://web-argument.com/accordion-image-menu-plugin">plugin page</a> or make today a special day.</p>
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" accept-charset="UNKNOWN" enctype="application/x-www-form-urlencoded" method="post"> <input name="cmd" size="20" type="hidden" value="_s-xclick" /> <input name="encrypted" size="20" type="hidden" value="-----BEGIN PKCS7-----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-----END PKCS7-----" /> <input alt="PayPal - The safer, easier way to pay online!" name="submit" size="20" src="https://www.paypal.com/en_US/i/btn/btn_donate_SM.gif" type="image" /> <img src="https://www.paypal.com/en_US/i/scr/pixel.gif" border="0" alt="" width="1" height="1" />
+</form>
+
+</div>
 
 <p class="submit">
-<input type="submit" name="Submit" value="Update" />
+<input type="submit" name="Submit" value="Update Options" class="button-primary" />
 </p>
 
 </form>
