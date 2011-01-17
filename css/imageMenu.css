@@ -1,58 +1,44 @@
 
 /**************************************************************
 
-	Accordion Image Menu Plugin	
+	Accordion Image Menu Plugin	V 3.0
 
 **************************************************************/
-
-
-.imageMenu {
+.aim {
 	position: relative;		
 	overflow: hidden;
+	margin:0 auto;
 }
 
-.imageMenu a {
-	background:#FFFFFF;	
+.aim a {
+	background-color:#333333;	
 	background-repeat: no-repeat;
 	background-position: center center;		
-	border-bottom: 2px solid #FFFFFF;
 	cursor:pointer;
 	display:block;
 	overflow:hidden;
-	color:#FFFFFF;	
 	font-size:12px;	
 	position:relative;
 	font-weight:bold;
 	float:left;
-		
+	text-decoration:none;		
 }
 
-.imageMenu a:hover, #imageMenu ul li a:visited{
-text-decoration:none;
+.aim a:hover, #imageMenu ul li a:visited{
+	text-decoration:none;
 }
 
-/*************************************************************/
-
-.vai_title{
-left:0;
-position:relative;
-top:0;
-color:#FFFFFF;
-display:block;
-padding:5px;
+.aim_title{
+	left:0;
+	position:relative;
+	top:0;
+	display:block;
+	padding:5px;
+	color:#FFFFFF;	
 }
 
-.vai_title_shadow{
-color:#131C25;
-left:0.1em;
-position:absolute;
-top:0.1em;
-display:block;
-padding:5px;
-}
-
-.imageMenu_bg{
-background:#000000;
-opacity:0.7;
-filter:alpha(opacity=70);
+.aim_title_bg{
+	background:#000000;
+	opacity:0.7;
+	filter:alpha(opacity=70);
 }

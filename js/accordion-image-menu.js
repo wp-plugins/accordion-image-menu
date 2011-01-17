@@ -11,22 +11,22 @@
 **************************************************************/
 
 var ImageMenu = new Class({
+	Implements : [Options,Events],
 	
-	getOptions: function(){
-		return {
-			onClose: Class.empty,
-			openDim: 200,
-			transition: Fx.Transitions.quadOut,
-			duration: 400,
-			open: null,
-			border: 0, 
-			pos: 'horizontal'
-		};
+	options:{
+		onOpen: function(){},
+		onClose: function(){},
+		openDim: 200,
+		transition: Fx.Transitions.quadOut,
+		duration: 400,
+		open: null,
+		border: 0, 
+		pos: 'horizontal'
 	},
 
 	initialize: function(elements, options){
 		
-		this.setOptions(this.getOptions(), options);
+		this.setOptions(this.options, options);
 		
 		this.elements = $$(elements);
 
@@ -101,4 +101,16 @@ ImageMenu.implement(new Options);
 ImageMenu.implement(new Events);
 
 
-/*************************************************************/
+	/* hover! */
+	Element.implement({
+		'hover': function(fn1,fn2) {
+			this.addEvents({
+				'mouseenter': function(e) {
+					fn1.attempt(e,this);
+				},
+				'mouseleave': function(e) {
+					fn2.attempt(e,this);
+				}
+			})
+		}
+	});
