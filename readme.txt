@@ -36,10 +36,6 @@ Special Features:
 
 Yes, you can use lightbox, thickbox, etc.
 
-= Can I use the menus created with the 3.0 wordpress menu interface?
-
-Yes, you just need to select the name of the menu that you want to deploy.
-
 == Screenshots ==
 
 1. The Menu
@@ -49,14 +45,10 @@ Yes, you just need to select the name of the menu that you want to deploy.
 
 == Changelog ==  
    
-= 1.0 =  
- * Inicial release.  
-   
-= 1.1 = 
- * Included Open Menu feature 
- * Included titles variations 
- * Fixed Jquery interactions 
- 
+= 3.0 =
+ * New Wordpress Menus integrated
+ * New shortcodes parameters added
+
 = 2.0 = 
  * Allowed horizontal position
  * Included shortcode options 
@@ -64,6 +56,10 @@ Yes, you just need to select the name of the menu that you want to deploy.
  * More than one menu by pages
  * Multiple menus allows
 
-= 3.0 =
- * New Wordpress Menus integrated
- * New shortcodes parameters added
+= 1.1 = 
+ * Included Open Menu feature 
+ * Included titles variations 
+ * Fixed Jquery interactions 
+
+= 1.0 =  
+ * Inicial release.
