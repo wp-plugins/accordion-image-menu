@@ -28,7 +28,7 @@ Special Features:
 1. Upload 'Accordion Image Menu' folder to the '/wp-content/plugins/' directory.
 2. Activate the plugin.
 3. Customize the menu under Settings/Accordion Image Menu.
-4. Insert the image menu widget, use the shortcode [a_image_menu] in your post or use this code <code><?php echo do_shortcode("[a_image_menu]")  ?></code> in your theme files. 
+4. Insert the image menu widget, use the shortcode [a_image_menu] in your post or use this code 'echo do_shortcode("[a_image_menu]")' in your theme files. 
 
 == Frequently Asked Questions ==
 
