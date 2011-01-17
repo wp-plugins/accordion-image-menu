@@ -4,7 +4,7 @@ Donate link: http://web-argument.com/accordion-image-menu-v-3-0/
 Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects, mootools
 Requires at least: 2.5
 Tested up to: 3.0.4
-Stable tag: 3.0
+Stable tag: 3.0.0
 
 Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can use it for recent posts, categories and pages. Now you can handle your menus using the wordpress 3.0 menus interface.
 
