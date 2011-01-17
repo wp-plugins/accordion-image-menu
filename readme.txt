@@ -10,9 +10,10 @@ Versatile Accordion Image Menu. Allows to use your medium size attached images a
 
 == Description ==
 
-This is a menu that uses your post images as a background. You can insert the menu wherever you want: content, theme files and widgets. Visit the <a href="http://web-argument.com/accordion-image-menu-v-30/">plugin page</a> for demo and details.
+This is a menu that uses your post images as background. You can insert the menu wherever you want: content, theme files and widgets. Visit the <a href="http://web-argument.com/accordion-image-menu-v-3-0/">plugin page</a> for demo and details.
 
 Special Features:
+
 *   Allows to combine pages and categories and apply order to them
 *	Its integrated with the new wordpress menus interface
 *   The plugin use the medium size image attached to post and pages
@@ -27,6 +28,7 @@ Special Features:
 1. Upload 'Accordion Image Menu' folder to the '/wp-content/plugins/' directory.
 2. Activate the plugin.
 3. Customize the menu under Settings/Accordion Image Menu.
+4. Insert the image menu widget, use the shortcode [a_image_menu] in your post or use this code <?php echo do_shortcode("[a_image_menu]")  ?> in your theme files. 
 
 == Frequently Asked Questions ==
 
@@ -34,7 +36,7 @@ Special Features:
 
 Yes, you can use lightbox, thickbox, etc.
 
-= Can I use the menus created with the new wordpress menu interface?
+= Can I use the menus created with the 3.0 wordpress menu interface?
 
 Yes, you just need to select the name of the menu that you want to deploy.
 
