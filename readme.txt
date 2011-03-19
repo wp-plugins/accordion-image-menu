@@ -13,14 +13,15 @@ Jquery - Accordion Image Menu that allows to use medium size images attached to 
 This is a menu that uses the images attached to the posts/pages galleries as items background. You can insert the menu wherever you want: into the content, in your theme files and as a widgets. Visit the <a href="http://web-argument.com/category/accordion-image-menu-2/">plugin page</a> for demos and details.
 
 Special Features:
+
 *   Allows to combine pages and categories and apply order to them
-*	Its integrated with the wordpress > 3.0 menus interface
+*   Its integrated with the wordpress > 3.0 menus interface
 *   The plugin uses the medium size image attached to post and pages
 *   The menu uses the top image from the posts/pages gallery
 *   You can use it to list recent posts
 *   Multiple transition effects included (Elastic, Bounce, Sine, Pow, Quart, Back, Circ)
 *   You can include 'the title' of the target pages
-*	Allows to include multiple menus on your blog 
+*   Allows to include multiple menus on your blog 
 *   The menu can be based on posts/pages ids
 *   Compatible with: Chrome, Safari, Firefox and IE 7, 8, 9  
 
