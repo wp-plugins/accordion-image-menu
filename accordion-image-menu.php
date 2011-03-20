@@ -3,7 +3,7 @@
 Plugin Name: Accordion Image Menu
 Plugin URI: http://web-argument.com/accordion-image-menu-v-3-0/
 Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can combine and order pages, categories and recent posts.  
-Version: 3.1.0
+Version: 3.1.1
 Author: Alain Gonzalez
 Author URI: http://web-argument.com/
 */
@@ -84,8 +84,8 @@ add_action('wp_head', 'a_image_menu_head');
 class AccordionImageMenuWidget extends WP_Widget {
     /** constructor */
     function AccordionImageMenuWidget() {
-		$widget_ops = array('classname' => 'accordion_image_menu', 'description' => __( 'Accordion Image Menu using the parameters saved on the Plugin Settings Page') );
-		$this->WP_Widget('archives', __('Accordion Image Menu'), $widget_ops);
+		$widget_ops = array('classname' => 'accordion_image_menu', 'title' => __( 'Accordion Image Menu'), 'description' => __( 'Accordion Image Menu using the parameters saved on the Plugin Settings Page') );
+		$this->WP_Widget('accordion_image_menu', __('Accordion Image Menu'), $widget_ops);
 	}
 
     /** @see WP_Widget::widget */
