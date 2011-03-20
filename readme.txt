@@ -4,9 +4,9 @@ Donate link: http://web-argument.com/2011/03/17/accordion-image-menu-v-3-1-less-
 Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects, mootools
 Requires at least: 2.8
 Tested up to: 3.1.0
-Stable tag: 3.1.0
+Stable tag: 3.1.1
 
-Jquery - Accordion Image Menu that allows to use medium size images attached to the posts and pages. You can use it for recent posts, categories, pages and the wordpress > 3.0 menus.
+Accordion Image Menu that allows to use the images attached to the posts and pages galleries as background. 
 
 == Description ==
 
@@ -14,16 +14,16 @@ This is a menu that uses the images attached to the posts/pages galleries as ite
 
 Special Features:
 
-*   Allows to combine pages and categories and apply order to them
-*   Its integrated with the wordpress > 3.0 menus interface
-*   The plugin uses the medium size image attached to post and pages
-*   The menu uses the top image from the posts/pages gallery
-*   You can use it to list recent posts
-*   Multiple transition effects included (Elastic, Bounce, Sine, Pow, Quart, Back, Circ)
-*   You can include 'the title' of the target pages
-*   Allows to include multiple menus on your blog 
-*   The menu can be based on posts/pages ids
-*   Compatible with: Chrome, Safari, Firefox and IE 7, 8, 9  
+ * Allows to combine pages and categories and apply order to them
+ * Its integrated with the wordpress > 3.0 menus interface
+ * The plugin uses the medium size image attached to post and pages
+ * The menu uses the top image from the posts/pages gallery
+ * You can use it to list recent posts
+ * Multiple transition effects included (Elastic, Bounce, Sine, Pow, Quart, Back, Circ)
+ * You can include 'the title' of the target pages
+ * Allows to include multiple menus on your blog 
+ * The menu can be based on posts/pages ids
+ * Compatible with: Chrome, Safari, Firefox and IE 7, 8, 9  
 
 == Installation ==
 
@@ -50,6 +50,9 @@ No, the menu only include images uploaded to your posts and pages.
 5. Menu behaviour
 
 == Changelog ==  
+
+= 3.1.1 =
+ * Widget bugs fixed
 
 = 3.1 =
  * Only jquery based
