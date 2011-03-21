@@ -55,7 +55,7 @@ No, the menu only include images uploaded to your posts and pages.
  * Widget bugs fixed
 
 = 3.1 =
- * Only jquery based
+ * Jquery based
  * Boder color option included
  * Image selection fixed: orderby - menu_order
  * Ids included to the shortcode attributes

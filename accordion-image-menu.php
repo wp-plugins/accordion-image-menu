@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Accordion Image Menu
-Plugin URI: http://web-argument.com/accordion-image-menu-v-3-0/
+Plugin URI: http://web-argument.com/2011/03/17/accordion-image-menu-v-3-1-less-code-more-flexibility/
 Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can combine and order pages, categories and recent posts.  
 Version: 3.1.1
 Author: Alain Gonzalez
