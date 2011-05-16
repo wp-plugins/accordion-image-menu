@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: Accordion Image Menu
-Plugin URI: http://web-argument.com/2011/03/17/accordion-image-menu-v-3-1-less-code-more-flexibility/
-Description: Versatile Accordion Image Menu. Allows to use your medium size attached images as links. You can combine and order pages, categories and recent posts.  
-Version: 3.1.1
+Plugin URI: http://web-argument.com/category/accordion-image-menu-2/
+Description: Versatile Accordion Image Menu. Allows to use the post's feature images as links. You can combine and order pages, categories and recent posts.  
+Version: 3.1.2
 Author: Alain Gonzalez
 Author URI: http://web-argument.com/
 */
@@ -134,24 +134,25 @@ add_action('widgets_init', create_function('', 'return register_widget("Accordio
 
 function a_m_image_url($the_parent){
 
-$attachments = get_children( array(
-						'post_parent' => $the_parent, 
-						'post_type' => 'attachment', 
-						'post_mime_type' => 'image', 
-						'order' => 'ASC', 
-						'orderby'=>'menu_order',
-						'numberposts' => 1) );
-						
-	
+	if( function_exists('has_post_thumbnail') && has_post_thumbnail($the_parent)) {
+	    $thumbnail_id = get_post_thumbnail_id( $the_parent );
+		if(!empty($thumbnail_id))
+		$img = wp_get_attachment_image_src( $thumbnail_id, 'thumbnail' );	
+	} else {
+	$attachments = get_children( array(
+										'post_parent' => $the_parent, 
+										'post_type' => 'attachment', 
+										'post_mime_type' => 'image',
+										'orderby' => 'menu_order', 
+										'order' => 'ASC', 
+										'numberposts' => 1) );
 	if($attachments == true) :
 		foreach($attachments as $id => $attachment) :
-			$img = wp_get_attachment_image_src($id, 'medium');
+			$img = wp_get_attachment_image_src($id, 'thumbnail');			
 		endforeach;		
 	endif;
-	
-	if(isset($img[0]))				
-	return $img[0]; 
-
+	}
+	if (isset($img[0])) return $img[0];
 }
 
 
