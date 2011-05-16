@@ -137,7 +137,7 @@ function a_m_image_url($the_parent){
 	if( function_exists('has_post_thumbnail') && has_post_thumbnail($the_parent)) {
 	    $thumbnail_id = get_post_thumbnail_id( $the_parent );
 		if(!empty($thumbnail_id))
-		$img = wp_get_attachment_image_src( $thumbnail_id, 'thumbnail' );	
+		$img = wp_get_attachment_image_src( $thumbnail_id, 'medium' );	
 	} else {
 	$attachments = get_children( array(
 										'post_parent' => $the_parent, 
@@ -148,7 +148,7 @@ function a_m_image_url($the_parent){
 										'numberposts' => 1) );
 	if($attachments == true) :
 		foreach($attachments as $id => $attachment) :
-			$img = wp_get_attachment_image_src($id, 'thumbnail');			
+			$img = wp_get_attachment_image_src($id, 'medium');			
 		endforeach;		
 	endif;
 	}
