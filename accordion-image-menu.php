@@ -3,7 +3,7 @@
 Plugin Name: Accordion Image Menu
 Plugin URI: http://web-argument.com/category/accordion-image-menu-2/
 Description: Versatile Accordion Image Menu. Allows to use the post's feature images as links. You can combine and order pages, categories and recent posts.  
-Version: 3.1.2
+Version: 3.1.3
 Author: Alain Gonzalez
 Author URI: http://web-argument.com/
 */
@@ -648,7 +648,7 @@ if ( count($menus) > 0 ) {
     </div>
 <?php } else { 
 
-_e('If you want to use a Wordpress Menu you need to create one under Appearance based on Pages and categories.'); 
+_e('If you want to use a Wordpress Menu you need to create one under Appearance based on Pages and Categories.'); 
 
 } ?>
 <?php } ?>
@@ -716,7 +716,7 @@ _e('If you want to use a Wordpress Menu you need to create one under Appearance 
 			  ?>
               <tr>
                 <td width="200" align="right"></td>
-                <td align="left" scope="row"><b>Pages') ?></b></td>
+                <td align="left" scope="row"></td>
               </tr>
             
              <?php 

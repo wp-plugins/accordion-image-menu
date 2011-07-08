@@ -3,8 +3,8 @@ Contributors: Alaingg
 Donate link: http://web-argument.com/2011/03/17/accordion-image-menu-v-3-1-less-code-more-flexibility/
 Tags: menu, accordion, category, image, widget, recent post, order, jquery, sidebar, transition, effects, mootools
 Requires at least: 2.8
-Tested up to: 3.1.2
-Stable tag: 3.1.2
+Tested up to: 3.2
+Stable tag: 3.1.3
 
 Accordion Image Menu that allows to use the images attached to the posts and pages galleries as background. 
 
@@ -50,6 +50,9 @@ No, the menu only include images uploaded to your posts and pages.
 5. Menu behaviour
 
 == Changelog ==  
+
+= 3.1.3 =
+ * Typo errors fixed
 
 = 3.1.2 =
  * Feature images added to the menu
